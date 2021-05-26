@@ -1,0 +1,13 @@
+runs:
+  using: "composite"
+  steps:
+    - name: Get Python Package Location
+      id: python-package-location
+      run: echo "::set-output name=dir::$(python -c 'import site; print(site.getsitepackages()[0])')"
+
+    - name: Cache Pip
+      id: pip-cache
+      uses: actions/cache@v2
+      with:
+        path: ${{ steps.python-package-location.outputs.dir }}
+        key: ${{ runner.os }}-${{ steps.python-package-location.outputs.dir }}-${{ hashFiles('Pipfile*') }}-v3
